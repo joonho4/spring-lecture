@@ -1,0 +1,138 @@
+openapi: 3.0.0
+info:
+  title: 게시물 관리 API
+  description: 게시물을 생성, 검색, 갱신 및 삭제하기 위한 API.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: 개발 서버 (로컬 데이터 사용)
+
+paths:
+  /articles/:
+    get:
+      summary: 게시물 목록 검색
+      description: 등록된 모든 게시물의 목록을 검색합니다.
+      responses:
+        '200':
+          description: 게시물 목록
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+
+    post:
+      summary: 새 게시물 생성
+      description: 새로운 게시물을 생성합니다.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCreate'
+      responses:
+        '200':
+          description: 게시물 생성됨
+
+  /articles/{id}:
+    get:
+      summary: ID로 게시물 검색
+      description: 특정 ID를 가진 게시물을 검색합니다.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 게시물 상세 정보
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: 게시물을 찾을 수 없음
+
+    put:
+      summary: 게시물 갱신
+      description: 특정 게시물의 내용을 갱신합니다.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUpdate'
+      responses:
+        '200':
+          description: 게시물 갱신됨
+
+    delete:
+      summary: 게시물 삭제
+      description: 특정 게시물을 삭제합니다.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 게시물 삭제됨
+        '404':
+          description: 게시물을 찾을 수 없음
+
+components:
+  schemas:
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "반갑다"
+        content:
+          type: string
+          example: "반갑다"
+        author:
+          type: string
+          example: "김대용"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-12-31T06:31:49"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-12-31T06:31:49"
+    PostCreate:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "새 게시물 제목"
+        content:
+          type: string
+          example: "새 게시물 내용"
+        author:
+          type: string
+          example: "작성자 이름"
+    PostUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "갱신된 게시물 제목"
+        content:
+          type: string
+          example: "갱신된 게시물 내용"
